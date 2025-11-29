@@ -1,0 +1,171 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .result-card {
+        background: rgba(255, 255, 255, 0.10);
+        border: 1px solid rgba(255,255,255,0.25);
+        backdrop-filter: blur(12px);
+        border-radius: 20px;
+        padding: 35px;
+        animation: fadeIn 0.7s ease;
+        color: #fff !important;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .uploaded-img {
+        width: 100%;
+        border-radius: 12px;
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .gradcam-container {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        flex-wrap: wrap;
+        margin-top: 35px;
+    }
+
+    .gradcam-container img {
+        width: 320px;
+        border-radius: 12px;
+        border: 2px solid rgba(255,255,255,0.3);
+        box-shadow: 0 0 15px #0002;
+    }
+
+    .highlight {
+        color: #0d6efd !important;
+        font-weight: 700;
+    }
+
+    .theme-toggle {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        padding: 8px 12px;
+        background: #ffffffcc;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 22px;
+        z-index: 1000;
+        backdrop-filter: blur(6px);
+    }
+
+    .patient-card {
+        background: rgba(0,0,0,0.3);
+        border-radius: 12px;
+        padding: 15px 18px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255,255,255,0.2);
+        font-size: 14px;
+    }
+</style>
+
+<div class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</div>
+
+<div class="container mt-5">
+    <div class="result-card shadow-lg">
+
+        <!-- Patient Info -->
+        <div class="patient-card mb-3">
+            <h5 class="mb-2">Patient Information</h5>
+            <div><strong>Name:</strong> {{ patient_name }}</div>
+            <div><strong>Age:</strong> {{ patient_age }}</div>
+            <div><strong>Gender:</strong> {{ patient_gender }}</div>
+        </div>
+
+        <h2 class="text-center mb-4 fw-bold">🧠 MRI Analysis Report</h2>
+
+        <!-- ORIGINAL MRI IMAGE -->
+        <h4 class="fw-semibold mb-2">Uploaded MRI</h4>
+        <img src="{{ image_path }}" class="uploaded-img">
+
+        <!-- PREDICTION -->
+        <h3 class="text-center mt-4">
+            Prediction: <span class="highlight">{{ prediction }}</span>
+        </h3>
+
+        <!-- CONFIDENCE BAR -->
+        <h5 class="mt-4 mb-1">Confidence Score</h5>
+        <div class="progress" style="height: 30px;">
+            <div class="progress-bar bg-primary fs-6 fw-bold" id="confBar" style="width: 0%;">
+                {{ confidence }}%
+            </div>
+        </div>
+
+        <!-- GRAD-CAM IMAGES -->
+        <div class="gradcam-container mt-4">
+
+            <div>
+                <h5 class="text-center">Grad-CAM Heatmap</h5>
+                <img src="{{ heatmap_path }}" alt="GradCAM Heatmap">
+            </div>
+
+            <div>
+                <h5 class="text-center">Heatmap Overlay</h5>
+                <img src="{{ overlay_path }}" alt="Overlay Image">
+            </div>
+        </div>
+
+        <!-- CLASS PROBABILITIES CHART -->
+        <div class="mt-5">
+            <h4 class="text-center mb-3 fw-semibold">Class-wise Probabilities</h4>
+            <canvas id="probChart"></canvas>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="mt-5 text-center">
+            <a href="/" class="btn btn-primary btn-lg px-4 me-2">Analyze Another MRI</a>
+
+            <a href="/download_report?image={{ image_path }}&prediction={{ prediction }}&confidence={{ confidence }}&heatmap={{ heatmap_path }}&overlay={{ overlay_path }}&patient_name={{ patient_name }}&patient_age={{ patient_age }}&patient_gender={{ patient_gender }}"
+               class="btn btn-success btn-lg px-4 mt-2 mt-md-0">
+                📄 Download PDF Report
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- JS LOGIC -->
+<script>
+    // Animate Confidence Bar
+    let conf = {{ confidence }};
+    let bar = document.getElementById("confBar");
+    setTimeout(() => { bar.style.width = conf + "%"; }, 300);
+
+    // Probability Bar Graph
+    const ctx = document.getElementById('probChart');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ labels | safe }},
+            datasets: [{
+                label: "Probability",
+                data: {{ probs | safe }},
+                backgroundColor: ['#0d6efd', '#6610f2', '#198754', '#dc3545']
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true, max: 1 } }
+        }
+    });
+
+    // Dark/Light Mode Toggle
+    function toggleTheme() {
+        document.body.classList.toggle("dark-mode");
+        document.body.classList.toggle("light-mode");
+    }
+</script>
+
+{% endblock %}

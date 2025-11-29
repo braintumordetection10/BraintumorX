@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    table img {
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    th {
+        font-weight: 700 !important;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        padding: 5px 12px;
+        font-size: 13px;
+        border-radius: 6px;
+    }
+
+    td {
+        vertical-align: middle;
+        font-size: 13px;
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+
+    <h2 class="text-center mb-4 text-light fw-bold">📊 MRI Analysis History</h2>
+
+    <div class="glass-card p-4 shadow-lg">
+
+        <table class="table table-dark table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>MRI</th>
+                    <th>Prediction</th>
+                    <th>Confidence</th>
+                    <th>Heatmap</th>
+                    <th>Overlay</th>
+                    <th>Patient</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Date</th>
+                    <th>Report</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for row in records %}
+                {# row index:
+                   0=id
+                   1=image_path
+                   2=prediction
+                   3=confidence
+                   4=heatmap_path
+                   5=overlay_path
+                   6=probabilities
+                   7=patient_name
+                   8=patient_age
+                   9=patient_gender
+                   10=created_at
+                #}
+                <tr>
+                    <td>{{ row[0] }}</td>
+
+                    <!-- MRI IMAGE -->
+                    <td>
+                        <img src="/{{ row[1] }}" width="70">
+                    </td>
+
+                    <!-- Prediction -->
+                    <td class="fw-bold text-info">
+                        {{ row[2] }}
+                    </td>
+
+                    <!-- Confidence -->
+                    <td>{{ row[3] }}%</td>
+
+                    <!-- Heatmap -->
+                    <td>
+                        {% if row[4] %}
+                            <img src="/{{ row[4] }}" width="70">
+                        {% else %}
+                            <span class="text-secondary">—</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Overlay -->
+                    <td>
+                        {% if row[5] %}
+                            <img src="/{{ row[5] }}" width="70">
+                        {% else %}
+                            <span class="text-secondary">—</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Patient info -->
+                    <td>{{ row[7] }}</td>
+                    <td>{{ row[8] }}</td>
+                    <td>{{ row[9] }}</td>
+
+                    <!-- Date -->
+                    <td>{{ row[10] }}</td>
+
+                    <!-- View Report Button -->
+                    <td>
+                        <a href="/download_report?image={{ row[1] }}&prediction={{ row[2] }}&confidence={{ row[3] }}&heatmap={{ row[4] }}&overlay={{ row[5] }}&patient_name={{ row[7] }}&patient_age={{ row[8] }}&patient_gender={{ row[9] }}"
+                           class="btn btn-primary btn-view">
+                            View PDF
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

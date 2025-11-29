@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<style>
+    .glass-box {
+        background: rgba(255, 255, 255, 0.10);
+        backdrop-filter: blur(12px);
+        border-radius: 18px;
+        padding: 35px;
+        border: 1px solid rgba(255,255,255,0.20);
+        max-width: 850px;
+        margin: auto;
+        animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+        font-weight: 700;
+        font-size: 32px;
+        background: linear-gradient(90deg, #0d6efd, #00aaff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .info-card {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 20px;
+        border: 1px solid rgba(255,255,255,0.15);
+        display: flex;
+        gap: 15px;
+        transition: 0.3s ease;
+    }
+
+    .info-card:hover {
+        background: rgba(255,255,255,0.18);
+        transform: translateY(-3px);
+    }
+
+    .icon-box {
+        font-size: 34px;
+        color: #00aaff;
+    }
+
+    .label {
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .value {
+        color: #ddd;
+        font-size: 17px;
+    }
+
+    .social-icon {
+        font-size: 32px;
+        color: #00aaff;
+        transition: 0.3s;
+    }
+
+    .social-icon:hover {
+        color: #66c8ff;
+        transform: scale(1.1);
+    }
+
+</style>
+
+<div class="glass-box mt-4 shadow-lg">
+
+    <h2 class="section-title text-center mb-4">Contact Information</h2>
+
+    <p class="text-center text-light mb-4">
+        For academic, research or project collaboration inquiries:
+    </p>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="info-card">
+                <i class="bi bi-person-fill icon-box"></i>
+                <div>
+                    <div class="label">Name</div>
+                    <div class="value">Hammad Ali</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="info-card">
+                <i class="bi bi-envelope-fill icon-box"></i>
+                <div>
+                    <div class="label">Email</div>
+                    <div class="value">
+                        <a href="mailto:hamaadiqbal10@gmail.com" class="text-light">hamaadiqbal10@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="info-card">
+                <i class="bi bi-building icon-box"></i>
+                <div>
+                    <div class="label">University</div>
+                    <div class="value">Superior University Lahore</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="info-card">
+                <i class="bi bi-geo-alt-fill icon-box"></i>
+                <div>
+                    <div class="label">Location</div>
+                    <div class="value">Lahore, Pakistan</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <h5 class="text-light">Connect With Me</h5>
+        <a href="#" class="mx-3 social-icon"><i class="bi bi-github"></i></a>
+        <a href="#" class="mx-3 social-icon"><i class="bi bi-linkedin"></i></a>
+    </div>
+
+</div>
+
+{% endblock %}
